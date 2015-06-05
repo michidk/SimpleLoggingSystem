@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 
-namespace LogSystem
+namespace SimpleLogSystem
 {
     public delegate void LogEventHandler(LogEntry entry);
 

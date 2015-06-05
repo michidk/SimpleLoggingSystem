@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LogSystem
+namespace SimpleLogSystem
 {
     public class LogEntry
     {

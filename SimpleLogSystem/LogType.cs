@@ -1,4 +1,4 @@
-﻿namespace LogSystem
+﻿namespace SimpleLogSystem
 {
     public enum LogType
     {
