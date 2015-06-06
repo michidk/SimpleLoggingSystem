@@ -5,11 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("SimpleLogSystem")]
-[assembly: AssemblyDescription("a simple log-system in csharp")]
+[assembly: AssemblyTitle("SimpleLoggingSystem")]
+[assembly: AssemblyDescription("a simple logging-system in csharp")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("michidk")]
-[assembly: AssemblyProduct("SimpleLogSystem")]
+[assembly: AssemblyProduct("SimpleLoggingSystem")]
 [assembly: AssemblyCopyright("Copyright © 2015 michidk")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

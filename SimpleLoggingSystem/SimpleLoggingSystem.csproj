@@ -7,8 +7,8 @@
     <ProjectGuid>{694AF31B-54B1-404F-AAED-93F13806E2FB}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SimpleLogSystem</RootNamespace>
-    <AssemblyName>SimpleLogSystem</AssemblyName>
+    <RootNamespace>SimpleLoggingSystem</RootNamespace>
+    <AssemblyName>SimpleLoggingSystem</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
