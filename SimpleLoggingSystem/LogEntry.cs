@@ -17,7 +17,7 @@ namespace SimpleLoggingSystem
 
         public override string ToString()
         {
-            return string.Format("{0} ({1}): {2}", Timestamp.ToShortTimeString(), Type, Content);
+            return String.Format("{0} ({1}): {2}", Timestamp.ToShortTimeString(), Type, Content);
         }
     }
 }

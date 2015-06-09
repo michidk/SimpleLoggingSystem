@@ -16,6 +16,11 @@ namespace SimpleLoggingSystem
         {
             this.filePath = filePath;
 
+            if (filePath != null)
+            {
+                Directory.CreateDirectory(Path.GetDirectoryName(filePath));
+            }
+
             OnLog += LogToFile;
         }
 
