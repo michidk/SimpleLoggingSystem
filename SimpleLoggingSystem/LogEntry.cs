@@ -2,22 +2,29 @@
 
 namespace SimpleLoggingSystem
 {
-    public class LogEntry
+    public struct LogEntry
     {
-        public DateTime Timestamp { get; set; }
-        public LogType Type { get; set; }
-        public string Content { get; set; }
+        public string Module { get; private set; }
+        public LogType Type { get; private set; }
+        public string Content { get; private set; }
+        public DateTime Timestamp { get; private set; }
 
-        public LogEntry(string message, LogType type = LogType.Info)
+        public LogEntry(string message, string module = null, LogType type = LogType.Info)
         {
-            Timestamp = DateTime.Now;
-            Type = type;
             Content = message;
+            Module = module;
+            Type = type;
+            Timestamp = DateTime.Now;
         }
 
         public override string ToString()
         {
-            return String.Format("{0} ({1}): {2}", Timestamp.ToShortTimeString(), Type, Content);
+            return $"{Timestamp.ToShortTimeString()} ({Type}): {(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}{Content}";
+        }
+
+        public string ToDetailedString()
+        {
+            return $"{Timestamp.ToLongTimeString()} {Timestamp.ToShortDateString()} ({Type}): {(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}{Content}";
         }
     }
 }

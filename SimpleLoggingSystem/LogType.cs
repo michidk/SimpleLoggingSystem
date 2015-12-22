@@ -2,6 +2,8 @@
 {
     public enum LogType
     {
+        Development,
+        Debug,
         Info,
         Warning,
         Error
