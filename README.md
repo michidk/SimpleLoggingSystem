@@ -10,8 +10,8 @@ First of all you have to create a new Logger instance:
 You just need one in your whole project.
 'log.txt' is the file, where all (whatever you log level is) your logs are written to (with time and date).
 If you want to disable file logging, then just set it to 'null'.
-The second parameter (boolean) defines wether the log should be written to the console or not.
-The logLevel defines which actions should be logged to the console and if the event 'OnLogFiltered'is fired.
+The second parameter (boolean) defines whether the log should be written to the console or not.
+The logLevel defines which actions should be logged to the console and if the event 'OnLogFiltered' is fired.
 
 There are 5 'LogType's you can use:
 ```
@@ -22,7 +22,7 @@ There are 5 'LogType's you can use:
   Error
 ```
 
-To log something, you just simply execute:
+To log something, you simply execute:
 ```cs
   logger.Log("my log message", "Logger Test", LogType.Debug);
 ```
