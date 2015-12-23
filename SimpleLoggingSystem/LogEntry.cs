@@ -17,12 +17,12 @@ namespace SimpleLoggingSystem
             Timestamp = DateTime.Now;
         }
 
-        public override string ToString()
+        public string ToConsoleString()
         {
-            return $"{Timestamp.ToShortTimeString()} ({Type}): {(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}{Content}";
+            return $"{Timestamp.ToShortTimeString()} ({Type}): \t{(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}\t{Content}";
         }
 
-        public string ToDetailedString()
+        public override string ToString()
         {
             return $"{Timestamp.ToLongTimeString()} {Timestamp.ToShortDateString()} ({Type}): {(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}{Content}";
         }

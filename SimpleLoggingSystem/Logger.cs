@@ -50,14 +50,30 @@ namespace SimpleLoggingSystem
         {
             using (var writer = File.AppendText(filePath))
             {
-                writer.WriteLineAsync(entry.ToDetailedString());
+                writer.WriteLineAsync(entry.ToString());
             }
         }
 
-        // Log To Console is filtered, and the short string is used (but you can implement your own)
+        // Log To Console is filtered & colored, and toConsoleString is used (but you can implement your own)
         private void OnLogToConsole(LogEntry entry)
         {
-            Console.WriteLine(entry.ToString());
+            var color = Console.ForegroundColor;
+            switch (entry.Type)
+            {
+                case LogType.Ann:
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    break;
+                case LogType.Warn:
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    break;
+                case LogType.Error:
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    break;
+            }
+
+            Console.WriteLine(entry.ToConsoleString());
+
+            Console.ForegroundColor = color;
         }
 
         public ModuleLog CreateModule(string name)
