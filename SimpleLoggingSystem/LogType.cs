@@ -4,8 +4,8 @@
     {
         Dev,    // Development
         Debug,
-        Ann,    // Announcement
         Info,
+        Ann,    // Announcement
         Warn,   // Warning
         Error
     }
