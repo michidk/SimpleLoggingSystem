@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
+using System.Text;
+using System.Threading;
 
 namespace SimpleLoggingSystem
 {
@@ -9,6 +11,8 @@ namespace SimpleLoggingSystem
 
     public class Logger
     {
+        private const int writeToFileInterval = 200;
+
         public event LogEventHandler OnLog;
         public event LogEventHandler OnLogFiltered; // filtered by LogLevel
 
@@ -17,8 +21,10 @@ namespace SimpleLoggingSystem
         private readonly string filePath;   // if filePath == null, then the log won't be logged to a file
         private readonly bool logToConsole;
 
-        private List<ModuleLog> modules = new List<ModuleLog>(); 
-
+        private readonly List<ModuleLog> modules = new List<ModuleLog>();
+        private readonly Thread fileThread;
+        private readonly Queue<LogEntry> fileQueue = new Queue<LogEntry>();
+        
         public Logger(string filePath, bool logToConsole = true, LogType logLevel = LogType.Info)
         {
             this.filePath = filePath;
@@ -30,6 +36,9 @@ namespace SimpleLoggingSystem
                 var info = new FileInfo(filePath).Directory;
                 info?.Create();
                 OnLog += OnLogToFile;
+                fileThread = new Thread(StartFileThread);
+                fileThread.IsBackground = true;
+                fileThread.Start();
             }
 
             if (logToConsole)
@@ -46,12 +55,9 @@ namespace SimpleLoggingSystem
         }
 
         // Log To File isn't filtered, and the detailed string is used
-        private void OnLogToFile(LogEntry entry)
+        private async void OnLogToFile(LogEntry entry)
         {
-            using (var writer = File.AppendText(filePath))
-            {
-                writer.WriteLineAsync(entry.ToString());
-            }
+            fileQueue.Enqueue(entry);
         }
 
         // Log To Console is filtered & colored, and toConsoleString is used (but you can implement your own)
@@ -74,6 +80,26 @@ namespace SimpleLoggingSystem
             Console.WriteLine(entry.ToConsoleString());
 
             Console.ForegroundColor = color;
+        }
+
+        private void StartFileThread()
+        {
+            while (true)
+            {
+                if (fileQueue.Count > 0)
+                {
+                    StringBuilder sb = new StringBuilder(fileQueue.Count);
+                    while (fileQueue.Count > 0)
+                    {
+                        sb.AppendLine(fileQueue.Dequeue().ToString());
+                    }
+                    using (var writer = File.AppendText(filePath))
+                    {
+                        writer.WriteAsync(sb.ToString());
+                    }
+                }
+                Thread.Sleep(writeToFileInterval);
+            }
         }
 
         public ModuleLog CreateModule(string name)
