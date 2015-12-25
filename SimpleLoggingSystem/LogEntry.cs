@@ -19,7 +19,7 @@ namespace SimpleLoggingSystem
 
         public string ToConsoleString()
         {
-            return $"{Timestamp.ToShortTimeString()} ({Type}): \t{(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}\t{Content}";
+            return $"{Timestamp.ToShortTimeString()} ({Type}) \t{(String.IsNullOrEmpty(Module) ? "" : "[" + Module + "] ")}\t{Content}";
         }
 
         public override string ToString()
