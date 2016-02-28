@@ -1,6 +1,6 @@
 ﻿namespace SimpleLoggingSystem
 {
-    public enum LogType
+    public enum LogLevel
     {
         Dev,    // Development
         Debug,
