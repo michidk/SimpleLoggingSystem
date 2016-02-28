@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.AccessControl;
@@ -11,8 +12,6 @@ namespace SimpleLoggingSystem
 
     public class Logger
     {
-        private const int writeToFileInterval = 200;
-
         public event LogEventHandler OnLog;
         public event LogEventHandler OnLogFiltered; // filtered by LogLevel
 
@@ -20,16 +19,19 @@ namespace SimpleLoggingSystem
 
         private readonly string filePath;   // if filePath == null, then the log won't be logged to a file
         private readonly bool logToConsole;
+        private readonly bool showExecutionPoint;
+        private readonly int writeToFileInterval;
 
-        private readonly List<ModuleLog> modules = new List<ModuleLog>();
         private readonly Thread fileThread;
-        private readonly Queue<LogEntry> fileQueue = new Queue<LogEntry>();
-        
-        public Logger(string filePath, bool logToConsole = true, LogType logLevel = LogType.Info)
+        private readonly ConcurrentQueue<LogEntry> fileQueue = new ConcurrentQueue<LogEntry>();
+
+        public Logger(string filePath, bool logToConsole = true, LogType logLevel = LogType.Info, bool showExecutionPoint = true, int writeToFileInterval = 200)
         {
             this.filePath = filePath;
             this.logToConsole = logToConsole;
             this.LogLevel = logLevel;
+            this.showExecutionPoint = showExecutionPoint;
+            this.writeToFileInterval = writeToFileInterval;
 
             if (filePath != null)
             {
@@ -45,9 +47,15 @@ namespace SimpleLoggingSystem
                 OnLogFiltered += OnLogToConsole;
         }
 
-        public void Log(string message, string module = null, LogType type = LogType.Info)
+        public void Log(string message, LogType type = LogType.Info, 
+            [System.Runtime.CompilerServices.CallerMemberName] string memberName = "",
+            [System.Runtime.CompilerServices.CallerFilePath] string sourceFilePath = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int sourceLineNumber = 0)
         {
-            var entry = new LogEntry(message, module, type);
+
+            String clazz = Path.GetFileNameWithoutExtension(sourceFilePath);
+            
+            var entry = new LogEntry(message, type, clazz, memberName, sourceLineNumber);
 
             OnLog?.Invoke(entry);
             if (type >= LogLevel)
@@ -77,7 +85,7 @@ namespace SimpleLoggingSystem
                     break;
             }
 
-            Console.WriteLine(entry.ToConsoleString());
+            Console.WriteLine(entry.ToConsoleString(showExecutionPoint));
 
             Console.ForegroundColor = color;
         }
@@ -91,22 +99,24 @@ namespace SimpleLoggingSystem
                     StringBuilder sb = new StringBuilder(fileQueue.Count);
                     while (fileQueue.Count > 0)
                     {
-                        sb.AppendLine(fileQueue.Dequeue().ToString());
+                        LogEntry log;
+                        var success = fileQueue.TryDequeue(out log);
+                        if (success)
+                        {
+                            sb.AppendLine(log.ToString());
+                        }
+                        else
+                        {
+                            Log("Couldn't dequeue log entry", LogType.Error);
+                        }
                     }
                     using (var writer = File.AppendText(filePath))
                     {
-                        writer.WriteAsync(sb.ToString());
+                        writer.Write(sb.ToString());
                     }
                 }
                 Thread.Sleep(writeToFileInterval);
             }
-        }
-
-        public ModuleLog CreateModule(string name)
-        {
-            var module = new ModuleLog(name, this);
-            modules.Add(module);
-            return module;
         }
     }
 }
