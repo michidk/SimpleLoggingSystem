@@ -168,5 +168,14 @@ namespace SimpleLoggingSystem
                 Thread.Sleep(writeToFileInterval);
             }
         }
+
+        /* TODO use this
+        private static void WriteToFile(string value, string path)
+        {
+            using (var writer = new StreamWriter(path, true))
+            using (var syncWriter = TextWriter.Synchronized(writer))
+                syncWriter.WriteLine(value);
+        }
+        */
     }
 }
